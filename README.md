@@ -69,3 +69,6 @@ python app.py
 ¿Qué problemas surgen si dos equipos trabajan en paralelo en el mismo monolito?  
 
 - Es más difícil de coordinar, ya que, como los componentes no son independientes el uno del otro, lo que realice un equipo puede acabar afectando el desarrollo del otro, trayendo conflictos de código, posibles conflictos en la estructura de datos entre equipos, la necesidad de implementar maneras ineficientes de trabajo (por ejemplo, esperar a que el primer equipo acabe para realizar cambios), entre otros. Problemas que son reducidos o eliminados cuando los componentes son independientes y existe una clara estructura a ocupar (ejemplo: endpoints bien definidos con estructuras de datos que no van a cambiar).
+
+## Enlace al repositorio
+[text](https://github.com/JoseLuisAlvarezManica/AppMonolitica)
