@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if modo == 'nuevo' %}Nuevo Producto{% else %}Editar Producto{% endif %} - Sistema de Productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">Sistema de Productos</div>
+            <ul class="nav-links">
+                <li><a href="/productos">Lista de Productos</a></li>
+                <li><a href="/productos/nuevo">Nuevo Producto</a></li>
+                <li><a href="/logout">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">
+                    {% if modo == 'nuevo' %}
+                        Nuevo Producto
+                    {% else %}
+                        Editar Producto
+                    {% endif %}
+                </h2>
+                
+                <div class="form-container">
+                    <form method="POST" action="{% if modo == 'nuevo' %}/productos/nuevo{% else %}/productos/{{ producto[0] }}/editar{% endif %}">
+                        <div class="form-group">
+                            <label for="nombre">Nombre del Producto:</label>
+                            <input type="text" id="nombre" name="nombre" 
+                                   value="{% if modo == 'editar' %}{{ producto[1] }}{% endif %}" 
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="precio">Precio:</label>
+                            <input type="number" id="precio" name="precio" step="0.01" min="0"
+                                   value="{% if modo == 'editar' %}{{ producto[2] }}{% endif %}" 
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stock">Stock:</label>
+                            <input type="number" id="stock" name="stock" min="0"
+                                   value="{% if modo == 'editar' %}{{ producto[3] }}{% endif %}" 
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="activo" name="activo" 
+                                       {% if modo == 'nuevo' or (modo == 'editar' and producto[4] == 1) %}checked{% endif %}>
+                                <label for="activo">Producto Activo</label>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 30px;">
+                            <button type="submit" class="btn btn-success">
+                                {% if modo == 'nuevo' %}
+                                    Crear Producto
+                                {% else %}
+                                    Actualizar Producto
+                                {% endif %}
+                            </button>
+                            <a href="/productos" class="btn">
+                                Volver a Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

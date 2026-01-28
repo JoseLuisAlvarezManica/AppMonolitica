@@ -12,7 +12,7 @@ def login():
         usuario = request.form.get("usuario")
         password = request.form.get("password")
 
-        if usuario == "hola" and password == "mundo":
+        if usuario == "admin" and password == "admin":
             session["usuario"] = usuario
             return redirect(url_for("products"))
         else:
@@ -27,51 +27,54 @@ def logout():
 
 @app.route("/products")
 def products():
-    if "usuario" not in session:
-        return redirect(url_for("login"))
-    return render_template("products.html")
+    return redirect(url_for("productos_get"))
 
 @app.route("/")
 def index():
     return redirect(url_for("login"))
 
-@app.route('/')
-def home():
-    # Renderiza el archivo index.html ubicado en templates/
-    return render_template('index.html')
-
 #Crud completo de productos
 # /productos (GET)
 @app.route('/productos', methods=['GET'])
 def productos_get():
-    if request.method == 'GET':
-        conn = get_db()
-        datos = conn.execute('SELECT * FROM productos;').fetchall()
-        conn.close()
-        return datos
-    else:
-        return render_template('index.html')
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+    
+    conn = get_db()
+    datos = conn.execute('SELECT * FROM productos;').fetchall()
+    conn.close()
+    return render_template('products.html', productos=datos)
 
-# /productos/nuevo (POST)
-@app.route('/productos/nuevo', methods=['POST'])
-def productos_post():
+# /productos/nuevo (GET y POST)
+@app.route('/productos/nuevo', methods=['GET', 'POST'])
+def productos_nuevo():
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+    
     if request.method == 'POST':
         nombre = request.form['nombre']
         precio = request.form['precio']
         stock = request.form['stock']
-        activo = request.form['activo']
-        comando = f""" INSERT INTO productos(nombre, precio, stock, activo) 
+        activo = 1 if request.form.get('activo') else 0
+        
+        comando = """ INSERT INTO productos(nombre, precio, stock, activo) 
                         VALUES (?, ?, ?, ?) """
         conn = get_db()
         conn.execute(comando, (nombre, precio, stock, activo))
         conn.commit()
         conn.close()
-    else:
-        return render_template('index.html')
+        
+        return redirect(url_for('productos_get'))
+    
+    # GET - mostrar formulario para nuevo producto
+    return render_template('product_form.html', modo='nuevo')
 
 # /productos/<id>/editar (PUT)
 @app.route('/productos/<int:id>/editar', methods=['GET', 'POST'])
 def productos_editar(id):
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+    
     conn = get_db()
     producto = conn.execute("SELECT * FROM productos WHERE id = ?", (id,)).fetchone()
 
@@ -79,7 +82,7 @@ def productos_editar(id):
         nombre = request.form['nombre']
         precio = request.form['precio']
         stock = request.form['stock']
-        activo = request.form['activo']
+        activo = 1 if request.form.get('activo') else 0
 
         conn.execute("""
             UPDATE productos
@@ -90,18 +93,23 @@ def productos_editar(id):
         conn.commit()
         conn.close()
 
-        return "Producto actualizado"
-    conn.close()
-    return render_template('form.html', producto=producto, modo="editar")
+        return redirect(url_for('productos_get'))
+    
+    # GET - mostrar formulario para editar producto
+    return render_template('product_form.html', modo='editar', producto=producto)
 
 # /productos/<id>/eliminar (DELETE)
 @app.route('/productos/<int:id>/eliminar', methods=['POST'])
 def productos_delete(id):
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+    
     conn = get_db()
     conn.execute("DELETE FROM productos WHERE id = ?", (id,))
     conn.commit()
     conn.close()
-    return "Producto eliminado "
+    
+    return redirect(url_for('productos_get'))
 
 if __name__ == '__main__':
     app.run(debug=True)
