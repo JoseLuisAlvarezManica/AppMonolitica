@@ -1,7 +1,7 @@
 import sqlite3
 
 SQUEMA_SQL = '''
-    CREATE TABLE IF NOT EXISTS stocks (
+    CREATE TABLE IF NOT EXISTS productos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL,
         precio REAL CHECK (precio >= 0),
