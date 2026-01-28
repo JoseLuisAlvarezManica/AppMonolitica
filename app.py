@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from db import get_db, create_database
 
-
 app = Flask(__name__)
-
 app.secret_key = "clave_secreta_ficticia"
+
 create_database()
 
 @app.route("/login", methods=["GET", "POST"])
