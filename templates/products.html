@@ -33,6 +33,7 @@
                             <th>Nombre</th>
                             <th>Precio</th>
                             <th>Stock</th>
+                            <th>Categoria</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -44,6 +45,7 @@
                             <td>{{ producto[1] }}</td>
                             <td>${{ "%.2f"|format(producto[2]) }}</td>
                             <td>{{ producto[3] }}</td>
+                            <td>{{ producto[5] }}</td>
                             <td>
                                 {% if producto[4] == 1 %}
                                     <span class="status-badge status-active">Activo</span>

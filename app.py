@@ -56,11 +56,12 @@ def productos_nuevo():
         precio = request.form['precio']
         stock = request.form['stock']
         activo = 1 if request.form.get('activo') else 0
+        categoria = request.form['categoria']
         
-        comando = """ INSERT INTO productos(nombre, precio, stock, activo) 
-                        VALUES (?, ?, ?, ?) """
+        comando = """ INSERT INTO productos(nombre, precio, stock, activo, categoria) 
+                        VALUES (?, ?, ?, ?, ?) """
         conn = get_db()
-        conn.execute(comando, (nombre, precio, stock, activo))
+        conn.execute(comando, (nombre, precio, stock, activo, categoria))
         conn.commit()
         conn.close()
         
@@ -83,12 +84,13 @@ def productos_editar(id):
         precio = request.form['precio']
         stock = request.form['stock']
         activo = 1 if request.form.get('activo') else 0
+        categoria = request.form['categoria']
 
         conn.execute("""
             UPDATE productos
-            SET nombre = ?, precio = ?, stock = ?, activo = ?
+            SET nombre = ?, precio = ?, stock = ?, activo = ?, categoria = ?
             WHERE id = ?
-        """, (nombre, precio, stock, activo, id))
+        """, (nombre, precio, stock, activo, categoria, id ))
 
         conn.commit()
         conn.close()
