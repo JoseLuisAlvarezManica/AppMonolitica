@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, Blueprint
 from db import get_db, create_database
 
 app = Flask(__name__)
