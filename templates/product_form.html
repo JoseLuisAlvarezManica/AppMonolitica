@@ -11,9 +11,9 @@
         <nav class="navbar">
             <div class="logo">Sistema de Productos</div>
             <ul class="nav-links">
-                <li><a href="/productos">Lista de Productos</a></li>
-                <li><a href="/productos/nuevo">Nuevo Producto</a></li>
-                <li><a href="/logout">Cerrar Sesión</a></li>
+                <li><a href="{{ url_for('productos.productos_get') }}">Lista de Productos</a></li>
+                <li><a href="{{ url_for('productos.productos_nuevo') }}">Nuevo Producto</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a></li>
             </ul>
         </nav>
 
@@ -27,8 +27,14 @@
                     {% endif %}
                 </h2>
                 
+                {% if error %}
+                <div class="alert alert-error" style="background-color: #fee; border: 1px solid #fcc; color: #c66; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
                 <div class="form-container">
-                    <form method="POST" action="{% if modo == 'nuevo' %}/productos/nuevo{% else %}/productos/{{ producto[0] }}/editar{% endif %}">
+                    <form method="POST" action="{% if modo == 'nuevo' %}{{ url_for('productos.productos_nuevo') }}{% else %}{{ url_for('productos.productos_editar', id=producto[0]) }}{% endif %}">
                         <div class="form-group">
                             <label for="nombre">Nombre del Producto:</label>
                             <input type="text" id="nombre" name="nombre" 
@@ -73,7 +79,7 @@
                                     Actualizar Producto
                                 {% endif %}
                             </button>
-                            <a href="/productos" class="btn">
+                            <a href="{{ url_for('productos.productos_get') }}" class="btn">
                                 Volver a Lista
                             </a>
                         </div>

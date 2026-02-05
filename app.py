@@ -1,118 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for, session, Blueprint
-from db import get_db, create_database
+from flask import Flask
+from config import DevelopmentConfig, TestingConfig, ProductionConfig
+from db import create_database
+from routes.auth_routes import auth_bp
+from routes.productos_routes import productos_bp
 
-app = Flask(__name__)
-app.secret_key = "clave_secreta_ficticia"
+def create_app(config=None):
+    app = Flask(__name__)
+    if config is None:
+        config =  DevelopmentConfig
+    app.config.from_object(config)
 
-create_database()
+    # Crear base de datos
+    create_database()
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        usuario = request.form.get("usuario")
-        password = request.form.get("password")
+    # Registrar blueprints
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(productos_bp)
 
-        if usuario == "admin" and password == "admin":
-            session["usuario"] = usuario
-            return redirect(url_for("products"))
-        else:
-            return render_template("login.html", error="Credenciales incorrectas")
-
-    return render_template("login.html")
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
-
-@app.route("/products")
-def products():
-    return redirect(url_for("productos_get"))
-
-@app.route("/")
-def index():
-    return redirect(url_for("login"))
-
-#Crud completo de productos
-# /productos (GET)
-@app.route('/productos', methods=['GET'])
-def productos_get():
-    if "usuario" not in session:
-        return redirect(url_for("login"))
-    
-    conn = get_db()
-    datos = conn.execute('SELECT * FROM productos;').fetchall()
-    conn.close()
-    return render_template('products.html', productos=datos)
-
-# /productos/nuevo (GET y POST)
-@app.route('/productos/nuevo', methods=['GET', 'POST'])
-def productos_nuevo():
-    if "usuario" not in session:
-        return redirect(url_for("login"))
-    
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        precio = request.form['precio']
-        stock = request.form['stock']
-        activo = 1 if request.form.get('activo') else 0
-        categoria = request.form['categoria']
-        
-        comando = """ INSERT INTO productos(nombre, precio, stock, activo, categoria) 
-                        VALUES (?, ?, ?, ?, ?) """
-        conn = get_db()
-        conn.execute(comando, (nombre, precio, stock, activo, categoria))
-        conn.commit()
-        conn.close()
-        
-        return redirect(url_for('productos_get'))
-    
-    # GET - mostrar formulario para nuevo producto
-    return render_template('product_form.html', modo='nuevo')
-
-# /productos/<id>/editar (PUT)
-@app.route('/productos/<int:id>/editar', methods=['GET', 'POST'])
-def productos_editar(id):
-    if "usuario" not in session:
-        return redirect(url_for("login"))
-    
-    conn = get_db()
-    producto = conn.execute("SELECT * FROM productos WHERE id = ?", (id,)).fetchone()
-
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        precio = request.form['precio']
-        stock = request.form['stock']
-        activo = 1 if request.form.get('activo') else 0
-        categoria = request.form['categoria']
-
-        conn.execute("""
-            UPDATE productos
-            SET nombre = ?, precio = ?, stock = ?, activo = ?, categoria = ?
-            WHERE id = ?
-        """, (nombre, precio, stock, activo, categoria, id ))
-
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for('productos_get'))
-    
-    # GET - mostrar formulario para editar producto
-    return render_template('product_form.html', modo='editar', producto=producto)
-
-# /productos/<id>/eliminar (DELETE)
-@app.route('/productos/<int:id>/eliminar', methods=['POST'])
-def productos_delete(id):
-    if "usuario" not in session:
-        return redirect(url_for("login"))
-    
-    conn = get_db()
-    conn.execute("DELETE FROM productos WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
-    
-    return redirect(url_for('productos_get'))
+    return app
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True)
 

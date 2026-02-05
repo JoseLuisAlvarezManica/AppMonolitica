@@ -1,4 +1,4 @@
-# App web monolítica en Flask
+# App web monolítica (desacoplada) en Flask
 
 ## Integrantes del Equipo
 José Luis Álvarez Mánica  
@@ -6,22 +6,36 @@ Marco Uriel Castaneda Avila
 Fernando Agustin Hernández Rivas  
 
 ## Fecha de realización: 
-28 de enero del 2026
+5 de febrero del 2026
 
 ## Descripción
-Este proyecto es una aplicación monolitica la cual integra una base de datos de productos, una pagina web sencilla (login simulado e una interfaz para realizar un CRUD hacia los productos) asi como una api en Flask para comunicar estos dos elementos y coordinar la pagina. Este diseño no es adecuado para uso en una pagina web comercial o personal, es parte de una actividad donde se establecieron decisiones de diseño consideradas como malas practicas con fines educativos.
+Este proyecto es una aplicación que representa un paso intermedio entre una aplicación monolítica tradicional y un sistema distribuido. Integra una base de datos de productos, una página web sencilla (login simulado e interfaz para realizar un CRUD hacia los productos) así como una API en Flask para comunicar estos elementos. 
+
+La aplicación está organizada en capas (repositories, services, routes) lo cual facilita la eventual migración hacia microservicios, aunque mantiene características monolíticas al ejecutarse como una sola unidad desplegable. Este diseño híbrido permite experimentar con patrones de arquitectura distribuida mientras se conserva la simplicidad del monolito, siendo parte de una actividad educativa para entender la evolución de arquitecturas de software.
 
 ## Estructura del Proyecto
 ```
 AppMonolitica/
-├── app.py              # Aplicación Flask principal
-├── db.py              # Configuración de base de datos
-├── requirements.txt    # Dependencias
-├── templates/         # Plantillas HTML
+├── app.py                   # Aplicación Flask principal
+├── config.py                # Configuraciones de la aplicación
+├── db.py                    # Configuración de base de datos
+├── requirements.txt         # Dependencias
+├── repositories/           # Capa de acceso a datos
+│   ├── __init__.py
+│   └── productos_repository.py
+├── routes/                 # Rutas y endpoints
+│   ├── __init__.py
+│   ├── auth_routes.py
+│   └── productos_routes.py
+├── services/              # Lógica de negocio
+│   ├── __init__.py
+│   ├── auth_service.py
+│   └── productos_service.py
+├── templates/             # Plantillas HTML
 │   ├── login.html
 │   ├── products.html
 │   └── product_form.html
-└── static/css/        # Archivos CSS
+└── static/css/           # Archivos CSS
     ├── login.css
     └── products.css
 ```

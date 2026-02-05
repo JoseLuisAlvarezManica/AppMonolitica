@@ -11,9 +11,9 @@
         <nav class="navbar">
             <div class="logo">Sistema de Productos</div>
             <ul class="nav-links">
-                <li><a href="/productos">Lista de Productos</a></li>
-                <li><a href="/productos/nuevo">Nuevo Producto</a></li>
-                <li><a href="/logout">Cerrar Sesión</a></li>
+                <li><a href="{{ url_for('productos.productos_get') }}">Lista de Productos</a></li>
+                <li><a href="{{ url_for('productos.productos_nuevo') }}">Nuevo Producto</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a></li>
             </ul>
         </nav>
 
@@ -21,8 +21,21 @@
             <div class="section">
                 <h2 class="section-title">Lista de Productos</h2>
                 
+                <!-- Formulario de búsqueda -->
+                <div class="search-container" style="margin-bottom: 20px;">
+                    <form method="GET" action="{{ url_for('productos.productos_get') }}" style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" name="search" placeholder="Buscar por nombre..." 
+                               value="{{ request.args.get('search', '') }}" 
+                               style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex: 1;">
+                        <button type="submit" class="btn" style="margin: 0;">Buscar</button>
+                        {% if request.args.get('search') %}
+                        <a href="{{ url_for('productos.productos_get') }}" class="btn" style="margin: 0;">Limpiar</a>
+                        {% endif %}
+                    </form>
+                </div>
+                
                 <div style="margin-bottom: 20px;">
-                    <a href="/productos/nuevo" class="btn btn-success">Nuevo Producto</a>
+                    <a href="{{ url_for('productos.productos_nuevo') }}" class="btn btn-success">Nuevo Producto</a>
                 </div>
 
                 {% if productos %}
@@ -55,8 +68,8 @@
                             </td>
                             <td>
                                 <div class="actions">
-                                    <a href="/productos/{{ producto[0] }}/editar" class="btn btn-warning">Editar</a>
-                                    <form method="POST" action="/productos/{{ producto[0] }}/eliminar" style="display: inline;" 
+                                    <a href="{{ url_for('productos.productos_editar', id=producto[0]) }}" class="btn btn-warning">Editar</a>
+                                    <form method="POST" action="{{ url_for('productos.productos_delete', id=producto[0]) }}" style="display: inline;" 
                                           onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
                                         <button type="submit" class="btn btn-danger">Eliminar</button>
                                     </form>
@@ -69,7 +82,7 @@
                 {% else %}
                 <div style="text-align: center; padding: 40px; color: #7f8c8d;">
                     <h3>No hay productos registrados</h3>
-                    <p><a href="/productos/nuevo" class="btn btn-success">Agregar el primer producto</a></p>
+                    <p><a href="{{ url_for('productos.productos_nuevo') }}" class="btn btn-success">Agregar el primer producto</a></p>
                 </div>
                 {% endif %}
             </div>
