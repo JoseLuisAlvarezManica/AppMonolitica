@@ -77,11 +77,3 @@ def productos_id(id):
             return jsonify({'status':'Producto eliminado'}), 200
         except Exception as e:
             return jsonify({'status': str(e)}), 404
-
-
-@api_productos.route('/productos', methods=['GET'])
-def productos_query():
-    
-    
-    return render_template('products.html', productos=productos)
-
