@@ -6,12 +6,14 @@ Marco Uriel Castaneda Avila
 Fernando Agustin Hernández Rivas  
 
 ## Fecha de realización: 
-5 de febrero del 2026
+9 de febrero del 2026
 
 ## Descripción
-Este proyecto es una aplicación que representa un paso intermedio entre una aplicación monolítica tradicional y un sistema distribuido. Integra una base de datos de productos, una página web sencilla (login simulado e interfaz para realizar un CRUD hacia los productos) así como una API en Flask para comunicar estos elementos. 
+Este proyecto es una aplicación que representa un paso intermedio entre una aplicación monolítica tradicional y un sistema distribuido. Integra una base de datos de productos, una página web sencilla (login simulado e interfaz para realizar un CRUD hacia los productos), así como una API en Flask para comunicar estos elementos. 
 
-La aplicación está organizada en capas (repositories, services, routes) lo cual facilita la eventual migración hacia microservicios, aunque mantiene características monolíticas al ejecutarse como una sola unidad desplegable. Este diseño híbrido permite experimentar con patrones de arquitectura distribuida mientras se conserva la simplicidad del monolito, siendo parte de una actividad educativa para entender la evolución de arquitecturas de software.
+La aplicación está organizada en capas (repositories, services, routes), lo cual facilita la eventual migración hacia microservicios, aunque mantiene características monolíticas al ejecutarse como una sola unidad desplegable. Este diseño híbrido permite experimentar con patrones de arquitectura distribuida mientras se conserva la simplicidad del monolito, siendo parte de una actividad educativa para entender la evolución de arquitecturas de software.
+
+Se creó a su vez una API  en la carpeta de routes, la cual luego será desacoplada como su propio servicio autónomo.
 
 ## Estructura del Proyecto
 ```
@@ -27,6 +29,7 @@ AppMonolitica/
 │   ├── __init__.py
 │   ├── auth_routes.py
 │   └── productos_routes.py
+│   └── api_productos.py
 ├── services/              # Lógica de negocio
 │   ├── __init__.py
 │   ├── auth_service.py

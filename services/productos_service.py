@@ -54,6 +54,12 @@ class ProductosService:
         return self.repository.find_by_id(id)
     
     def update_producto(self, id, nombre, precio, stock, activo, categoria):
+        
+        producto = self.get_producto_by_id(id)
+
+        if not producto:
+            raise ValueError("No existe un producto relacionado a esa id.")
+        
         # Validar nombre (TEXT NOT NULL)
         if not nombre or not isinstance(nombre, str):
             raise ValueError("Nombre es requerido y debe ser texto")
@@ -89,4 +95,9 @@ class ProductosService:
         return self.repository.modify(nombre, precio, stock, activo, categoria, id)
     
     def delete_producto(self, id):
+        producto = self.get_producto_by_id(id)
+                
+        if not producto:
+            raise ValueError("No existe un producto relacionado a esa id.")
+
         return self.repository.delete(id)
